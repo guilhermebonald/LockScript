@@ -42,18 +42,21 @@ class MyCript:
 
         for root, dirs, files in os.walk(dir_f):
             for file in files:
-                file_path = os.path.join(root, file)
+                try:
+                    file_path = os.path.join(root, file)
 
-                with open(file_path, "rb") as f:
-                    dados = f.read()
+                    with open(file_path, "rb") as f:
+                        dados = f.read()
 
-                dados_criptografados = cipher_suite.encrypt(dados)
-                encrypted_file_path = file_path + ".encrypted"
+                        dados_criptografados = cipher_suite.encrypt(dados)
+                        encrypted_file_path = file_path + ".encrypted"
 
-                with open(encrypted_file_path, "wb") as f:
-                    f.write(dados_criptografados)
+                        with open(encrypted_file_path, "wb") as f:
+                            f.write(dados_criptografados)
 
-                os.remove(file_path)
+                        os.remove(file_path)
+                except Exception as e:
+                    print(f"Erro ao processar o arquivo: {e}")
 
         # Gen Salt File
         with open("salt.txt", "wb") as f:
@@ -86,23 +89,41 @@ class MyCript:
         dir_f = self.get_directory()
 
         for root, dirs, files in os.walk(dir_f):
-            for file in files:
-                if file.endswith(".encrypted"):
-                    file_path = os.path.join(root, file)
-                    with open(file_path, "rb") as f:
-                        dados_criptografados = f.read()
+            try:
+                for file in files:
+                    if file.endswith(".encrypted"):
+                        file_path = os.path.join(root, file)
+                        with open(file_path, "rb") as f:
+                            dados_criptografados = f.read()
 
-                    dados_descriptografados = cipher_suite.decrypt(dados_criptografados)
+                        dados_descriptografados = cipher_suite.decrypt(
+                            dados_criptografados
+                        )
 
-                    decrypted_file_path = file_path.removesuffix(".encrypted")
+                        decrypted_file_path = file_path.removesuffix(".encrypted")
 
-                    with open(decrypted_file_path, "wb") as f:
-                        f.write(dados_descriptografados)
+                        with open(decrypted_file_path, "wb") as f:
+                            f.write(dados_descriptografados)
 
-                    os.remove(file_path)
+                        os.remove(file_path)
+            except Exception as e:
+                print(f"Erro ao processar o arquivo: {e}")
 
 
 cript = MyCript()
+print(
+    """
+
+██       ██████   ██████ ██   ██         ██ ███    ██ 
+██      ██    ██ ██      ██  ██          ██ ████   ██ 
+██      ██    ██ ██      █████           ██ ██ ██  ██ 
+██      ██    ██ ██      ██  ██          ██ ██  ██ ██ 
+███████  ██████   ██████ ██   ██ ███████ ██ ██   ████ 
+                                                      
+                                                      
+                                                       
+"""
+)
 while True:
     print("1 - Criptografar")
     print("2 - Descriptografar")
